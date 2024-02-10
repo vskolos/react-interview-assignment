@@ -1,4 +1,5 @@
-import { Product } from '@/types'
+import { useCart } from '@/contexts'
+import { Product } from '@/schemas'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 
@@ -8,6 +9,8 @@ type Props = {
 }
 
 export function PopoverProduct({ product, className }: Props) {
+  const cart = useCart()
+
   return (
     <article className={clsx('flex items-center flex-wrap gap-4', className)}>
       <div className="w-12 h-12 grid relative rounded-lg bg-white flex-shrink-0">
@@ -26,7 +29,10 @@ export function PopoverProduct({ product, className }: Props) {
           </span>
         </div>
       </div>
-      <button className="relative ms-auto flex-shrink-0 rounded-lg p-1 group border-2 border-neutral-700 hover:border-neutral-800 active:border-neutral-700 hover:bg-neutral-800 active:bg-neutral-700">
+      <button
+        className="relative ms-auto flex-shrink-0 rounded-lg p-1 group border-2 border-neutral-700 hover:border-neutral-800 active:border-neutral-700 hover:bg-neutral-800 active:bg-neutral-700"
+        onClick={() => cart.remove(product.id)}
+      >
         <TrashIcon
           strokeWidth={2}
           className="h-6 w-6 text-neutral-700 group-hover:text-neutral-200 group-active:text-neutral-200"

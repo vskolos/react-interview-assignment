@@ -1,4 +1,5 @@
-import { Product } from '@/types'
+import { useCart } from '@/contexts'
+import { Product } from '@/schemas'
 import {
   CheckIcon,
   ShoppingBagIcon,
@@ -13,6 +14,12 @@ type Props = {
 }
 
 export function ProductCard({ product, className }: Props) {
+  const cart = useCart()
+
+  const isProductInCart =
+    cart.products.find((cartProduct) => cartProduct.id === product.id) !==
+    undefined
+
   return (
     <article
       className={clsx(
@@ -47,29 +54,37 @@ export function ProductCard({ product, className }: Props) {
               </span>
             </div>
           </div>
-
-          {/* Товар добавлен в корзину */}
-          <div className="flex items-center gap-2">
-            <div className="flex flex-grow items-center justify-center gap-2 border-2 border-emerald-500 rounded-lg py-1.5 px-4">
-              <CheckIcon strokeWidth={2} className="h-6 w-6 text-emerald-500" />
-              <span className="text-emerald-500 font-medium">Added</span>
+          {isProductInCart ? (
+            <div className="flex items-center gap-2">
+              <div className="flex flex-grow items-center justify-center gap-2 border-2 border-emerald-500 rounded-lg py-1.5 px-4">
+                <CheckIcon
+                  strokeWidth={2}
+                  className="h-6 w-6 text-emerald-500"
+                />
+                <span className="text-emerald-500 font-medium">Added</span>
+              </div>
+              <button
+                className="flex group items-center justify-center gap-2 rounded-lg p-1.5 border-2 border-neutral-900 hover:border-neutral-800 hover:bg-neutral-800 active:border-neutral-700 active:bg-neutral-700"
+                onClick={() => cart.remove(product.id)}
+              >
+                <TrashIcon
+                  strokeWidth={2}
+                  className="h-6 w-6 text-neutral-700 group-hover:text-neutral-200 group-active:text-neutral-200"
+                />
+              </button>
             </div>
-            <button className="flex group items-center justify-center gap-2 rounded-lg p-1.5 border-2 border-neutral-900 hover:border-neutral-800 hover:bg-neutral-800 active:border-neutral-700 active:bg-neutral-700">
-              <TrashIcon
+          ) : (
+            <button
+              className="flex items-center justify-center gap-2 rounded-lg py-2 px-4 bg-neutral-900 hover:bg-neutral-800 active:bg-neutral-700"
+              onClick={() => cart.add(product)}
+            >
+              <ShoppingBagIcon
                 strokeWidth={2}
-                className="h-6 w-6 text-neutral-700 group-hover:text-neutral-200 group-active:text-neutral-200"
+                className="h-6 w-6 text-neutral-200"
               />
+              <span className="text-neutral-200 font-medium">Add to cart</span>
             </button>
-          </div>
-
-          {/* Товар не добавлен в корзину */}
-          <button className="flex items-center justify-center gap-2 rounded-lg py-2 px-4 bg-neutral-900 hover:bg-neutral-800 active:bg-neutral-700">
-            <ShoppingBagIcon
-              strokeWidth={2}
-              className="h-6 w-6 text-neutral-200"
-            />
-            <span className="text-neutral-200 font-medium">Add to cart</span>
-          </button>
+          )}
         </div>
       </div>
     </article>
